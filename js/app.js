@@ -73,16 +73,8 @@ class Navbar {
         .scrollIntoView({ behavior: "smooth" });
 
       // Add class 'active' to section
-      document.querySelector(".active-class")?.classList.remove("active-class");
-      document
-        .querySelector(`[href="#${event.target.dataset.sectionId}"]`)
-        .classList.add("active-class");
-      document
-        .querySelector(".your-active-class")
-        ?.classList.remove("your-active-class");
-      document
-        .querySelector(`#${event.target.dataset.sectionId}`)
-        .classList.add("your-active-class");
+
+      addActiveClassStyle(event.target.dataset.sectionId);
     });
   }
 }
@@ -109,6 +101,38 @@ function addNewSection() {
   navbar.createNavbar();
 }
 
+// function to Add class 'active' to section
+function addActiveClassStyle(currentID) {
+  document.querySelector(".active-class")?.classList.remove("active-class");
+  document
+    .querySelector(`[href="#${currentID}"]`)
+    .classList.add("active-class");
+  document
+    .querySelector(".your-active-class")
+    ?.classList.remove("your-active-class");
+  document.querySelector(`#${currentID}`).classList.add("your-active-class");
+}
+
+function whichSectionOnScreen(element, buffer) {
+  buffer = typeof buffer === "undefined" ? 0 : buffer;
+
+  //get the position of element
+  const bound = element.getBoundingClientRect();
+
+  //check the element in viewport
+  if (
+    bound.top >= buffer &&
+    bound.left >= buffer &&
+    bound.right <=
+      (window.innerWidth || document.documentElement.clientWidth)-buffer &&
+    bound.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight)-buffer
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
 /**
  * End Helper Functions
  * start main functions
@@ -124,6 +148,12 @@ addNewSection();
  *
  */
 
-// Scroll to section on link click
+//add active class to current section on scroll
 
-
+window.addEventListener('scroll', () => {
+  document.querySelectorAll("section").forEach((element) => {
+    if (whichSectionOnScreen(element, -500)) {
+      addActiveClassStyle(element.id);
+    }
+  });
+});
