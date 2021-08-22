@@ -19,21 +19,21 @@
 
 class Section {
   sectionId = 0;
-  get getSectionContent() {
-    return `
+
+  addSection() {
+    this.sectionId += 1;
+    const main = document.querySelector("main");
+    const sectionData = `
     <section id="section${this.sectionId}" data-navbar="Section ${this.sectionId}" class="your-active-class">
       <div class="landing__container">
         <h2>Section ${this.sectionId}</h2>
         <p>This is the content of the section</p>
       </div>
     </section>`;
+    main.insertAdjacentHTML("beforeend", sectionData);
   }
-
-  addSection() {
-    this.sectionId += 1;
-    document
-      .getElementsByTagName("main")[0]
-      .insertAdjacentHTML("beforeend", this.getSectionContent);
+  getID() {
+    return this.sectionId;
   }
 }
 
@@ -45,24 +45,16 @@ class Section {
 class Navbar {
   navbarElement = document.getElementById("navbar__list");
 
-  createNavbar() {
-    // var node = document.createElement("li");
-    // var textnode = document.createTextNode(`Section ${secionId}`);
-    // node.appendChild(textnode);
-    // document.getElementById("navbar__list").appendChild(node);
-
-    this.navbarElement.innerHTML = "";
-    document.querySelectorAll("section").forEach((element) => {
-      this.navbarElement.insertAdjacentHTML(
-        "beforeend",
-        `
-      <li>
-        <a class="menu__link" href="#${element.id}" data-section-id="${element.id}">
-        ${element.dataset.navbar}
+  createNavbar(id) {
+    let navbarItems = [];
+    const navbarItem = document.getElementById(`section${id}`);
+    const navbarContent = `<li>
+        <a class="menu__link" href="#${navbarItem.id}" data-section-id="${navbarItem.id}">
+        ${navbarItem.dataset.navbar}
         </a>
-      </li>`
-      );
-    });
+      </li>`;
+    navbarItems.push(navbarContent);
+    this.navbarElement.insertAdjacentHTML("beforeend", navbarItems);
 
     this.navbarElement.addEventListener("click", function (event) {
       event.preventDefault();
@@ -95,10 +87,11 @@ const navbar = new Navbar();
 
 //add new section to the page
 function addNewSection() {
+  let id = 0;
   section.addSection();
-
+  id = section.getID();
   // build the nav
-  navbar.createNavbar();
+  navbar.createNavbar(id);
 }
 
 // function to Add class 'active' to section
@@ -113,24 +106,20 @@ function addActiveClassStyle(currentID) {
   document.querySelector(`#${currentID}`).classList.add("your-active-class");
 }
 
-function whichSectionOnScreen(element, buffer) {
-  buffer = typeof buffer === "undefined" ? 0 : buffer;
-
+function whichSectionOnScreen(element) {
   //get the position of element
   const bound = element.getBoundingClientRect();
 
   //check the element in viewport
   if (
-    bound.top >= buffer &&
-    bound.left >= buffer &&
+    bound.top >= -100 &&
+    bound.left >= -100 &&
     bound.right <=
-      (window.innerWidth || document.documentElement.clientWidth)-buffer &&
+      (window.innerWidth || document.documentElement.clientWidth) - -100 &&
     bound.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight)-buffer
+      (window.innerHeight || document.documentElement.clientHeight) - -100
   ) {
     return true;
-  } else {
-    return false;
   }
 }
 /**
@@ -150,9 +139,9 @@ addNewSection();
 
 //add active class to current section on scroll
 
-window.addEventListener('scroll', () => {
+window.addEventListener("scroll", () => {
   document.querySelectorAll("section").forEach((element) => {
-    if (whichSectionOnScreen(element, -500)) {
+    if (whichSectionOnScreen(element)) {
       addActiveClassStyle(element.id);
     }
   });
