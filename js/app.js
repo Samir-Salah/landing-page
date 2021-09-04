@@ -18,22 +18,22 @@
 //start section class
 
 class Section {
-  sectionId = 0;
+  id = 0;
 
   addSection() {
-    this.sectionId += 1;
+    this.id += 1;
     const main = document.querySelector("main");
     const sectionData = `
-    <section id="section${this.sectionId}" data-navbar="Section ${this.sectionId}" class="your-active-class">
+    <section id="section${this.id}" data-navbar="Section ${this.id}" class="your-active-class">
       <div class="landing__container">
-        <h2>Section ${this.sectionId}</h2>
+        <h2>Section ${this.id}</h2>
         <p>This is the content of the section</p>
       </div>
     </section>`;
     main.insertAdjacentHTML("beforeend", sectionData);
   }
   getID() {
-    return this.sectionId;
+    return this.id;
   }
 }
 
@@ -77,6 +77,7 @@ class Navbar {
  */
 const section = new Section();
 const navbar = new Navbar();
+let id=0;
 
 /**
  * End Global Variables
@@ -87,11 +88,10 @@ const navbar = new Navbar();
 
 //add new section to the page
 function addNewSection() {
-  let id = 0;
   section.addSection();
-  id = section.getID();
+  section.getID();
   // build the nav
-  navbar.createNavbar(id);
+  navbar.createNavbar(section.getID());
 }
 
 // function to Add class 'active' to section
@@ -115,9 +115,9 @@ function whichSectionOnScreen(element) {
     bound.top >= -100 &&
     bound.left >= -100 &&
     bound.right <=
-      (window.innerWidth || document.documentElement.clientWidth) - -100 &&
+    (window.innerWidth || document.documentElement.clientWidth) - -100 &&
     bound.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) - -100
+    (window.innerHeight || document.documentElement.clientHeight) - -100
   ) {
     return true;
   }
@@ -127,7 +127,6 @@ function whichSectionOnScreen(element) {
  * start main functions
 
 */
-addNewSection();
 addNewSection();
 addNewSection();
 addNewSection();
